@@ -19,12 +19,15 @@ class Ensemble(Predictor):
                  encoding_type=None,
                  num_ensemble=3, 
                  predictor_type='feedforward',
-                 ss_type='nasbench201'):
+                 ss_type='nasbench201',
+                 need_separate_hpo = True):
         self.num_ensemble = num_ensemble
         self.predictor_type = predictor_type
         self.encoding_type = encoding_type
         self.ss_type = ss_type
-    
+        self.need_separate_hpo = need_separate_hpo
+        self.hyperparams = None
+
     def get_ensemble(self):
         # TODO: if encoding_type is not None, set the encoding type
 
@@ -68,8 +71,17 @@ class Ensemble(Predictor):
         return [copy.deepcopy(trainable_predictors[self.predictor_type]) for _ in range(self.num_ensemble)]
 
     def fit(self, xtrain, ytrain, train_info=None):
-        
+
         self.ensemble = self.get_ensemble()
+
+        self.default_hyperparams = self.ensemble[0].default_hyperparams
+        # get hyperparameters
+        if self.hyperparams is None:
+            self.hyperparams = self.default_hyperparams
+
+        for predictor_model in self.ensemble:
+            predictor_model.hyperparams = self.hyperparams
+
         train_errors = []
         for i in range(self.num_ensemble):
             train_error = self.ensemble[i].fit(xtrain, ytrain)
@@ -84,3 +96,7 @@ class Ensemble(Predictor):
             predictions.append(prediction)
             
         return np.array(predictions)
+
+    def get_random_hyperparams(self):
+        params = self.ensemble[0].get_random_hyperparams()
+        return params

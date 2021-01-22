@@ -166,18 +166,32 @@ class GCN(nn.Module):
 
 
 class BonasPredictor(Predictor):
-    def __init__(self, encoding_type='bonas', ss_type=None):
+    def __init__(self, encoding_type='bonas', ss_type=None, need_separate_hpo=True):
         self.encoding_type = encoding_type
+        self.need_separate_hpo = need_separate_hpo
         if ss_type is not None:
             self.ss_type = ss_type
+        self.default_hyperparams = {'gcn_hidden': 64,
+                                    'batch_size': 128,
+                                    'epochs': 100,
+                                    'lr': 1e-4,
+                                    'wd': 0}
 
     def get_model(self, **kwargs):
         predictor = GCN(**kwargs)
         return predictor
 
-    def fit(self, xtrain, ytrain, train_info=None,
-            gcn_hidden=64,seed=0,batch_size=128,
-            epochs=100,lr=1e-4,wd=0):
+    def fit(self, xtrain, ytrain, train_info=None, seed=0):
+
+        # get hyperparameters
+        if self.hyperparams is None:
+            self.hyperparams = self.default_hyperparams
+
+        gcn_hidden = self.hyperparams['gcn_hidden']
+        batch_size = self.hyperparams['batch_size']
+        epochs = self.hyperparams['epochs']
+        lr = self.hyperparams['lr']
+        wd = self.hyperparams['wd']
 
         # get mean and std, normlize accuracies
         self.mean = np.mean(ytrain)
@@ -233,3 +247,12 @@ class BonasPredictor(Predictor):
 
         pred = np.concatenate(pred)
         return pred * self.std + self.mean
+
+    def get_random_hyperparams(self):
+        params = {
+            'gcn_hidden': 64,
+            'batch_size': 128,
+            'epochs': 100,
+            'lr': 1e-4,
+            'wd': 0}
+        return params

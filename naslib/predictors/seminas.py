@@ -570,10 +570,20 @@ def generate_synthetic_controller_data(model, base_arch=None, random_arch=0,ss_t
     return synthetic_input, synthetic_target
 
 class SemiNASPredictor(Predictor):
-    def __init__(self, encoding_type='gcn', ss_type=None):
+    def __init__(self, encoding_type='gcn', ss_type=None, need_separate_hpo = True):
         self.encoding_type = encoding_type
+        self.need_separate_hpo = need_separate_hpo
+
         if ss_type is not None:
             self.ss_type = ss_type
+        self.default_hyperparams = {'gcn_hidden': 64,
+                                    'batch_size': 100,
+                                    'epochs': 50,
+                                    'iteration': 1,
+                                    'pretrain_epochs': 50,
+                                    'synthetic_factor': 1,
+                                    'lr': 1e-3,
+                                    'wd': 0}
 
     def get_model(self, **kwargs):
         if self.ss_type == 'nasbench101':
@@ -582,15 +592,21 @@ class SemiNASPredictor(Predictor):
             predictor = NAO(encoder_length=35,decoder_length=35)
         return predictor
 
-    def fit(self, xtrain, ytrain, train_info=None,
-            gcn_hidden=64, 
-            batch_size=100, 
-            lr=1e-3,
-            wd=0, 
-            iteration=1, 
-            epochs=50,
-            pretrain_epochs=50, 
-            synthetic_factor=1):
+    def fit(self, xtrain, ytrain, train_info=None):
+
+        # get hyperparameters
+        if self.hyperparams is None:
+            self.hyperparams = self.default_hyperparams
+
+        gcn_hidden = self.hyperparams['gcn_hidden']
+        batch_size = self.hyperparams['batch_size']
+        epochs = self.hyperparams['epochs']
+        iteration = self.hyperparams['iteration']
+        pretrain_epochs = self.hyperparams['pretrain_epochs']
+        synthetic_factor = self.hyperparams['synthetic_factor']
+        lr = self.hyperparams['lr']
+        wd = self.hyperparams['wd']
+
 
         up_sample_ratio = 10
         if self.ss_type == 'nasbench101':
@@ -676,3 +692,15 @@ class SemiNASPredictor(Predictor):
 
         pred = np.concatenate(pred)
         return np.squeeze(pred * self.std + self.mean)
+
+    def get_random_hyperparams(self):
+        params = {
+            'gcn_hidden': 64,
+            'batch_size': 100,
+            'epochs': 50,
+            'iteration': 1,
+            'pretrain_epochs': 50,
+            'synthetic_factor': 1,
+            'lr': 1e-3,
+            'wd': 0}
+        return params

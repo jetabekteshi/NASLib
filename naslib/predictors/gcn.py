@@ -88,10 +88,17 @@ class NeuralPredictorModel(nn.Module):
 
 
 class GCNPredictor(Predictor):
-    def __init__(self, encoding_type='gcn', ss_type=None):
+    def __init__(self, encoding_type='gcn', ss_type=None, need_separate_hpo = True):
         self.encoding_type = encoding_type
+        self.need_separate_hpo = need_separate_hpo
+
         if ss_type is not None:
             self.ss_type = ss_type
+        self.default_hyperparams = {'gcn_hidden': 144,
+                                    'batch_size': 7,
+                                    'epochs': 300,
+                                    'lr': 1e-4,
+                                    'wd': 3e-4}
 
     def get_model(self, **kwargs):
         if self.ss_type == 'nasbench101':
@@ -101,9 +108,18 @@ class GCNPredictor(Predictor):
         predictor = NeuralPredictorModel(initial_hidden=initial_hidden)
         return predictor
 
-    def fit(self, xtrain, ytrain, train_info=None,
-            gcn_hidden=144,seed=0,batch_size=7,
-            epochs=300,lr=1e-4,wd=3e-4):
+    def fit(self, xtrain, ytrain, train_info=None, seed=0):
+
+        # get hyperparameters
+        if self.hyperparams is None:
+            self.hyperparams = self.default_hyperparams
+
+        gcn_hidden = self.hyperparams['gcn_hidden']
+        batch_size = self.hyperparams['batch_size']
+        epochs = self.hyperparams['epochs']
+        lr = self.hyperparams['lr']
+        wd = self.hyperparams['wd']
+
 
         # get mean and std, normlize accuracies
         self.mean = np.mean(ytrain)

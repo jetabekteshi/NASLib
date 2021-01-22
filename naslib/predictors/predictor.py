@@ -3,6 +3,8 @@ class Predictor:
     def __init__(self, ss_type=None, encoding_type=None):
         self.ss_type = ss_type
         self.encoding_type = encoding_type
+        self.hyperparams = None
+        self.need_separate_hpo = False
         
     def set_ss_type(self, ss_type):
         self.ss_type = ss_type

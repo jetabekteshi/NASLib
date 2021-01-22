@@ -194,6 +194,49 @@ def get_config_from_args(args=None, config_type='nas'):
 
     return config
 
+def cross_validation(xtrain, ytrain, predictor, split_indices, score_metric='pearson'):
+
+    validation_score = []
+
+    for train_indices, validation_indices in split_indices:
+        xtrain_i = [xtrain[j] for j in train_indices]
+        ytrain_i = [ytrain[j] for j in train_indices]
+        xval_i = [xtrain[j] for j in train_indices]
+        yval_i = [ytrain[j] for j in train_indices]
+
+        predictor.fit(xtrain_i, ytrain_i)
+        ypred_i = predictor.query(xval_i)
+        # use Pearson correlation to be the metric -> maximise Pearson correlation
+        if score_metric == 'pearson':
+            score_i = np.abs(np.corrcoef(yval_i, ypred_i)[1,0])
+        validation_score.append(score_i)
+
+    return np.mean(validation_score)
+
+def generate_kFold(n, k):
+    '''
+    Input:
+        n: number of training examples
+        k: number of folds
+    Returns:
+        kfold_indices: a list of len k. Each entry takes the form
+        (training indices, validation indices)
+    '''
+    assert k >= 2
+    kfold_indices = []
+
+    indices = np.array(range(n))
+    fold_size = n // k
+
+    fold_indices = [indices[i * fold_size: (i + 1) * fold_size] for i in range(k - 1)]
+    fold_indices.append(indices[(k - 1) * fold_size:])
+
+    for i in range(k):
+        training_indices = [fold_indices[j] for j in range(k) if j != i]
+        validation_indices = fold_indices[i]
+        kfold_indices.append((np.concatenate(training_indices), validation_indices))
+
+    return kfold_indices
 
 def get_train_val_loaders(config, mode):
     """

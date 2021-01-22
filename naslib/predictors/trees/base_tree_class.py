@@ -6,13 +6,16 @@ from naslib.predictors.predictor import Predictor
 
 class BaseTree(Predictor):
 
-    def __init__(self, encoding_type='adjacency_one_hot', ss_type='nasbench201'):
+    def __init__(self, encoding_type='adjacency_one_hot', ss_type='nasbench201', need_separate_hpo=True):
         super(Predictor, self).__init__()
         self.encoding_type = encoding_type
         self.ss_type = ss_type
+        self.hyperparams = None
+        self.need_separate_hpo = need_separate_hpo
+
 
     @property
-    def parameters(self):
+    def default_hyperparams(self):
         return {}
 
     def get_dataset(self, encodings, labels=None):
@@ -68,3 +71,5 @@ class BaseTree(Predictor):
         return np.squeeze(self.model.predict(test_data)) * self.std + self.mean
 
 
+    def get_random_hyperparams(self):
+        pass
