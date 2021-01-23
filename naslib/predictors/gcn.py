@@ -91,6 +91,7 @@ class GCNPredictor(Predictor):
     def __init__(self, encoding_type='gcn', ss_type=None, need_separate_hpo = True):
         self.encoding_type = encoding_type
         self.need_separate_hpo = need_separate_hpo
+        self.hyperparams = None
 
         if ss_type is not None:
             self.ss_type = ss_type
@@ -112,7 +113,7 @@ class GCNPredictor(Predictor):
 
         # get hyperparameters
         if self.hyperparams is None:
-            self.hyperparams = self.default_hyperparams
+            self.hyperparams = self.default_hyperparams.copy()
 
         gcn_hidden = self.hyperparams['gcn_hidden']
         batch_size = self.hyperparams['batch_size']
@@ -178,7 +179,7 @@ class GCNPredictor(Predictor):
     def get_random_hyperparams(self):
         if self.hyperparams is None:
             # evaluate the default config first during HPO
-            params = self.default_hyperparams
+            params = self.default_hyperparams.copy()
         else:
             params = {'gcn_hidden': int(8 * np.random.choice(range(4, 20))),
                     'batch_size': 7,

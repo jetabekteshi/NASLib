@@ -66,6 +66,7 @@ class FeedforwardPredictor(Predictor):
                                     'batch_size': 32,
                                     'lr': 0.001,
                                     'regularization': 0.2}
+        self.hyperparams = None
 
     def get_model(self, **kwargs):
         predictor = FeedforwardNet(**kwargs)
@@ -75,7 +76,7 @@ class FeedforwardPredictor(Predictor):
 
         # get hyperparameters
         if self.hyperparams is None:
-            self.hyperparams = self.default_hyperparams
+            self.hyperparams = self.default_hyperparams.copy()
 
         num_layers = self.hyperparams['num_layers']
         layer_width = self.hyperparams['layer_width']
@@ -164,7 +165,7 @@ class FeedforwardPredictor(Predictor):
         # get hyperparameters
         if self.hyperparams is None:
             # evaluate the default config first during HPO
-            params = self.default_hyperparams
+            params = self.default_hyperparams.copy()
         else:
             params = {
                 'num_layers': np.random.choice(range(5,25)),

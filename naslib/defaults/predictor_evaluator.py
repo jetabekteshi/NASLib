@@ -135,7 +135,7 @@ class PredictorEvaluator(object):
         # the second condition check whether we want to run HPO at current fidelity or train_size
         self.learn_hyper = True # TODO for debug --> remove this line later
         if self.predictor.need_separate_hpo and self.learn_hyper:
-            self.run_hpo(xtrain, ytrain, iters=3, score_metric='pearson')
+            self.run_hpo(xtrain, ytrain, iters=100, score_metric='pearson') #TODO iters= specify how many hps to be tried
             self.learn_hyper = False
 
         fit_time_start = time.time()
@@ -249,28 +249,32 @@ class PredictorEvaluator(object):
             json.dump(self.results, file, separators=(',', ':'))
 
     def run_hpo(self, xtrain, ytrain, iters=3, score_metric='pearson'):
+        logger.info(f'Perform HPO: run CV among {iters} hyperparams and scored by {score_metric}')
         n_train = len(xtrain)
         split_indices = utils.generate_kFold(n_train, 3)
         predictor = copy.deepcopy(self.predictor)
 
-        # cv_score = utils.cross_validation(xtrain, ytrain, predictor, split_indices)
-        min_score = -1e6
+        # use score metric: maximise score metric
+        best_score = -1e6
         best_hyperparams = None
 
         for i in range(iters):
             hyperparams = predictor.get_random_hyperparams()
+            print(f'hyper_i = {hyperparams}') # for debug TODO remove this line later
             # check whether the predictor needs epoch training: if so, reduce the training epoch number during HPO
             if 'epochs' in hyperparams.keys():
                 hyperparams['epochs'] = int(hyperparams['epochs']/10)
             predictor.hyperparams = hyperparams
             cv_score = utils.cross_validation(xtrain, ytrain, predictor, split_indices, score_metric)
-            if cv_score > min_score:
+            if cv_score > best_score:
                 best_hyperparams = hyperparams
-                min_score = cv_score
+                best_score = cv_score
 
-        if min_score is np.nan:
+        if best_score is np.nan:
             best_hyperparams = predictor.default_hyperparams
-        elif 'epochs' in hyperparams.keys():
-            best_hyperparams['epochs'] = predictor.default_hyperparams['epochs']
+        elif 'epochs' in best_hyperparams.keys():
+            # best_hyperparams['epochs'] = predictor.default_hyperparams['epochs']
+            best_hyperparams['epochs'] = int(best_hyperparams['epochs'] * 10)
+        logger.info(f'Perform HPO: Best hyperparams = {best_hyperparams} with CV score = {best_score}')
         self.predictor.hyperparams = best_hyperparams
 

@@ -27,6 +27,7 @@ class Ensemble(Predictor):
         self.ss_type = ss_type
         self.need_separate_hpo = need_separate_hpo
         self.hyperparams = None
+        self.ensemble = None
 
     def get_ensemble(self):
         # TODO: if encoding_type is not None, set the encoding type
@@ -72,7 +73,8 @@ class Ensemble(Predictor):
 
     def fit(self, xtrain, ytrain, train_info=None):
 
-        self.ensemble = self.get_ensemble()
+        if self.ensemble is None:
+            self.ensemble = self.get_ensemble()
 
         self.default_hyperparams = self.ensemble[0].default_hyperparams
         # get hyperparameters
@@ -98,5 +100,7 @@ class Ensemble(Predictor):
         return np.array(predictions)
 
     def get_random_hyperparams(self):
+        if self.ensemble is None:
+            self.ensemble = self.get_ensemble()
         params = self.ensemble[0].get_random_hyperparams()
         return params

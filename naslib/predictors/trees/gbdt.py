@@ -45,14 +45,14 @@ class GBDTPredictor(BaseTree):
 
     def fit(self, xtrain, ytrain, train_info=None, params=None, **kwargs):
         if self.hyperparams is None:
-            self.hyperparams = self.default_hyperparams
+            self.hyperparams = self.default_hyperparams.copy()
         return super(GBDTPredictor, self).fit(xtrain, ytrain, params, **kwargs)
 
 
     def get_random_hyperparams(self):
         if self.hyperparams is None:
             # evaluate the default config first during HPO
-            params = self.default_hyperparams
+            params = self.default_hyperparams.copy()
         else:
             params = {
                 'boosting_type': 'gbdt',
