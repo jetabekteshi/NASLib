@@ -74,42 +74,21 @@ class NGBoost(BaseTree):
         return super(NGBoost, self).fit(xtrain, ytrain, params, **kwargs)
 
     def get_random_hyperparams(self):
-        params = {
-            'param': {
-                'n_estimators': int(loguniform(128, 512)),
-                'learning_rate': loguniform(.001, .1),
-                'minibatch_frac': np.random.uniform(.1, 1)},
-            'base':{
-                'max_depth': np.random.choice(24) + 1,
-                'max_features': np.random.uniform(.1, 1),
-                'min_samples_leaf': np.random.choice(18) + 2,
-                'min_samples_split': np.random.choice(18) + 2}
-            #'early_stopping_rounds': 100,
-            #'verbose': -1
-        }
+        if self.hyperparams is None:
+            # evaluate the default config first during HPO
+            params = self.default_hyperparams
+        else:
+            params = {
+                'param': {
+                    'n_estimators': int(loguniform(128, 512)),
+                    'learning_rate': loguniform(.001, .1),
+                    'minibatch_frac': np.random.uniform(.1, 1)},
+                'base':{
+                    'max_depth': np.random.choice(24) + 1,
+                    'max_features': np.random.uniform(.1, 1),
+                    'min_samples_leaf': np.random.choice(18) + 2,
+                    'min_samples_split': np.random.choice(18) + 2}
+                #'early_stopping_rounds': 100,
+                #'verbose': -1
+            }
         return params
-
-    # def run_hpo(self, xtrain, ytrain, iters=1000):
-    #     min_score = 100000
-    #     best_params = None
-    #     for _ in range(iters):
-    #         self.param_dict = self.get_random_dict()
-    #         self.params = self.param_func
-    #         print('trying out', self.params(identifier='base:'), self.params(identifier='param:'))
-    #         score = self.cross_validate(xtrain, ytrain)
-    #         if score < min_score:
-    #             min_score = score
-    #             best_params = self.params
-    #             print('new best', score, best_params(identifier='base:'), best_params(identifier='param:'))
-    #     return best_params
-    #
-    # def cross_validate(self, xtrain, ytrain):
-    #     base_learner = DecisionTreeRegressor(criterion='friedman_mse',
-    #                                          random_state=None,
-    #                                          splitter='best',
-    #                                          **self.params(identifier='base:'))
-    #     model = NGBRegressor(Dist=Normal, Base=base_learner, Score=LogScore,
-    #                          verbose=True, **self.params(identifier='param:'))
-    #     scores = cross_val_score(model, xtrain, ytrain, cv=3)
-    #     print(scores, np.mean(scores))
-    #     return np.mean(scores)

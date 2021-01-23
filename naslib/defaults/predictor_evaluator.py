@@ -133,7 +133,7 @@ class PredictorEvaluator(object):
         # check whether need to run HPO:
         # the first condition check whether the predictor needs separate HPO
         # the second condition check whether we want to run HPO at current fidelity or train_size
-        self.learn_hyper = True # for debug
+        self.learn_hyper = True # TODO for debug --> remove this line later
         if self.predictor.need_separate_hpo and self.learn_hyper:
             self.run_hpo(xtrain, ytrain, iters=3, score_metric='pearson')
             self.learn_hyper = False
@@ -253,13 +253,15 @@ class PredictorEvaluator(object):
         split_indices = utils.generate_kFold(n_train, 3)
         predictor = copy.deepcopy(self.predictor)
 
-        # evaluate the default parameters
-        cv_score = utils.cross_validation(xtrain, ytrain, predictor, split_indices)
-        min_score = cv_score
-        best_hyperparams = predictor.default_hyperparams
+        # cv_score = utils.cross_validation(xtrain, ytrain, predictor, split_indices)
+        min_score = -1e6
+        best_hyperparams = None
 
         for i in range(iters):
             hyperparams = predictor.get_random_hyperparams()
+            # check whether the predictor needs epoch training: if so, reduce the training epoch number during HPO
+            if 'epochs' in hyperparams.keys():
+                hyperparams['epochs'] = int(hyperparams['epochs']/10)
             predictor.hyperparams = hyperparams
             cv_score = utils.cross_validation(xtrain, ytrain, predictor, split_indices, score_metric)
             if cv_score > min_score:
@@ -268,7 +270,7 @@ class PredictorEvaluator(object):
 
         if min_score is np.nan:
             best_hyperparams = predictor.default_hyperparams
-
-        # TODO limit the epochs number for NN-based predictors to a small value for quicker hp learning
+        elif 'epochs' in hyperparams.keys():
+            best_hyperparams['epochs'] = predictor.default_hyperparams['epochs']
         self.predictor.hyperparams = best_hyperparams
 

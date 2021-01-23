@@ -50,16 +50,20 @@ class GBDTPredictor(BaseTree):
 
 
     def get_random_hyperparams(self):
-        params = {
-            'boosting_type': 'gbdt',
-            'objective': 'regression',
-            'metric': {'l2'},
-            'min_data_in_leaf': 5,  # added by Colin White
-            'num_leaves': np.random.choice(range(10,100)),
-            'learning_rate': loguniform(.001, .1),
-            'feature_fraction': np.random.uniform(.1, 1.0),
-            'bagging_fraction': 0.8,
-            'bagging_freq': 5,
-            'verbose': -1
-        }
+        if self.hyperparams is None:
+            # evaluate the default config first during HPO
+            params = self.default_hyperparams
+        else:
+            params = {
+                'boosting_type': 'gbdt',
+                'objective': 'regression',
+                'metric': {'l2'},
+                'min_data_in_leaf': 5,  # added by Colin White
+                'num_leaves': np.random.choice(range(10,100)),
+                'learning_rate': loguniform(.001, .1),
+                'feature_fraction': np.random.uniform(.1, 1.0),
+                'bagging_fraction': 0.8,
+                'bagging_freq': 5,
+                'verbose': -1
+            }
         return params

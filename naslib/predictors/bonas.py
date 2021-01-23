@@ -249,7 +249,11 @@ class BonasPredictor(Predictor):
         return pred * self.std + self.mean
 
     def get_random_hyperparams(self):
-        params = {
+        if self.hyperparams is None:
+            # evaluate the default config first during HPO
+            params = self.default_hyperparams
+        else:
+            params = {
             'gcn_hidden': int(8 * np.random.choice(range(4, 20))),
             'batch_size': 128,
             'epochs': 100,

@@ -176,7 +176,11 @@ class GCNPredictor(Predictor):
         return pred * self.std + self.mean
 
     def get_random_hyperparams(self):
-        params = {'gcn_hidden': int(8 * np.random.choice(range(4, 20))),
+        if self.hyperparams is None:
+            # evaluate the default config first during HPO
+            params = self.default_hyperparams
+        else:
+            params = {'gcn_hidden': int(8 * np.random.choice(range(4, 20))),
                     'batch_size': 7,
                     'epochs': 300,
                     'lr': 1e-4,

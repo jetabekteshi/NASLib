@@ -47,20 +47,24 @@ class XGBoost(BaseTree):
         return super(XGBoost, self).fit(xtrain, ytrain, params, **kwargs)
 
     def get_random_hyperparams(self):
-        params = {
-            'objective': 'reg:squarederror',
-            'eval_metric': "rmse",
-            #'early_stopping_rounds': 100,
-            'booster': 'gbtree',
-            #NOTE: if using these hyperparameters XGB predicts the same
-            # values always on NB201
-            'max_depth': np.random.choice(range(1,15)),
-            'min_child_weight': np.random.choice(range(1,100)),
-            'colsample_bytree': np.random.uniform(.0, 1.0),
-            'learning_rate': loguniform(.001, .1),
-            #'alpha': 0.24167936088332426,
-            #'lambda': 31.393252465064943,
-            'colsample_bylevel': np.random.uniform(.0, 1.0),
-            #'verbose': -1
-        }
+        if self.hyperparams is None:
+            # evaluate the default config first during HPO
+            params = self.default_hyperparams
+        else:
+            params = {
+                'objective': 'reg:squarederror',
+                'eval_metric': "rmse",
+                #'early_stopping_rounds': 100,
+                'booster': 'gbtree',
+                #NOTE: if using these hyperparameters XGB predicts the same
+                # values always on NB201
+                'max_depth': np.random.choice(range(1,15)),
+                'min_child_weight': np.random.choice(range(1,100)),
+                'colsample_bytree': np.random.uniform(.0, 1.0),
+                'learning_rate': loguniform(.001, .1),
+                #'alpha': 0.24167936088332426,
+                #'lambda': 31.393252465064943,
+                'colsample_bylevel': np.random.uniform(.0, 1.0),
+                #'verbose': -1
+            }
         return params

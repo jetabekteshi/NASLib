@@ -161,12 +161,17 @@ class FeedforwardPredictor(Predictor):
         return np.squeeze(pred)
 
     def get_random_hyperparams(self):
-        params = {
-            'num_layers': np.random.choice(range(5,25)),
-            'layer_width': np.random.choice(range(5,25)),
-            'loss': 'mae',
-            'epochs': 500,
-            'batch_size': 32,
-            'lr': np.random.choice([0.1, 0.01, 0.005, 0.001, 0.0001]),
-            'regularization': 0.2}
+        # get hyperparameters
+        if self.hyperparams is None:
+            # evaluate the default config first during HPO
+            params = self.default_hyperparams
+        else:
+            params = {
+                'num_layers': np.random.choice(range(5,25)),
+                'layer_width': np.random.choice(range(5,25)),
+                'loss': 'mae',
+                'epochs': 500,
+                'batch_size': 32,
+                'lr': np.random.choice([0.1, 0.01, 0.005, 0.001, 0.0001]),
+                'regularization': 0.2}
         return params
