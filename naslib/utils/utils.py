@@ -5,6 +5,8 @@ import logging
 import argparse
 import torchvision.datasets as dset
 from torch.utils.data import Dataset
+from sklearn import metrics
+from scipy import stats
 
 from copy import copy
 from collections import OrderedDict
@@ -209,6 +211,19 @@ def cross_validation(xtrain, ytrain, predictor, split_indices, score_metric='pea
         # use Pearson correlation to be the metric -> maximise Pearson correlation
         if score_metric == 'pearson':
             score_i = np.abs(np.corrcoef(yval_i, ypred_i)[1,0])
+        elif score_metric == 'mae':
+            score_i = np.mean(abs(ypred_i - yval_i))
+        elif score_metric == 'rmse':
+            score_i = metrics.mean_squared_error(yval_i, ypred_i, squared=False)
+        elif score_metric == 'spearman':
+            score_i = stats.spearmanr(yval_i, ypred_i)[0]
+        elif score_metric == 'kendalltau':
+            score_i = stats.kendalltau(yval_i, ypred_i)[0]
+        elif score_metric == 'kt_2dec':
+            score_i = stats.kendalltau(yval_i, np.round(ypred_i, decimals=2))[0]
+        elif score_metric == 'kt_1dec':
+            score_i = stats.kendalltau(yval_i, np.round(ypred_i, decimals=1))[0]
+
         validation_score.append(score_i)
 
     return np.mean(validation_score)
