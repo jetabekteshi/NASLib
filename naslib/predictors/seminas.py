@@ -570,7 +570,7 @@ def generate_synthetic_controller_data(model, base_arch=None, random_arch=0,ss_t
     return synthetic_input, synthetic_target
 
 class SemiNASPredictor(Predictor):
-    def __init__(self, encoding_type='gcn', ss_type=None, need_separate_hpo = True):
+    def __init__(self, encoding_type='gcn', ss_type=None, need_separate_hpo = False):
         self.encoding_type = encoding_type
         self.need_separate_hpo = need_separate_hpo
 

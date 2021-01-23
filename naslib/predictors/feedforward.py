@@ -162,11 +162,11 @@ class FeedforwardPredictor(Predictor):
 
     def get_random_hyperparams(self):
         params = {
-            'num_layers': 20,
-            'layer_width': 20,
+            'num_layers': np.random.choice(range(5,25)),
+            'layer_width': np.random.choice(range(5,25)),
             'loss': 'mae',
             'epochs': 500,
             'batch_size': 32,
-            'lr': 0.001,
+            'lr': np.random.choice([0.1, 0.01, 0.005, 0.001, 0.0001]),
             'regularization': 0.2}
         return params

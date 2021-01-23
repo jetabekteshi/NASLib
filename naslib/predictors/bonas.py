@@ -250,9 +250,9 @@ class BonasPredictor(Predictor):
 
     def get_random_hyperparams(self):
         params = {
-            'gcn_hidden': 64,
+            'gcn_hidden': int(8 * np.random.choice(range(4, 20))),
             'batch_size': 128,
             'epochs': 100,
             'lr': 1e-4,
-            'wd': 0}
+            'wd': np.random.choice([0, 3e-5, 3e-4, 3e-3])}
         return params

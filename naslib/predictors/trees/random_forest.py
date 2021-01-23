@@ -37,10 +37,10 @@ class RandomForestPredictor(BaseTree):
 
     def get_random_hyperparams(self):
         params = {
-            'n_estimators': np.random.choice(range(80,120)),
-            'max_features': 0.17055852159745608,
-            'min_samples_leaf': 2,
-            'min_samples_split': 2,
+            'n_estimators': np.random.choice(range(16,128)),
+            'max_features': np.random.uniform(.1, 1),
+            'min_samples_leaf': np.random.choice(range(1,20)),
+            'min_samples_split': np.random.choice(range(2,128)),
             'bootstrap': False,
             # 'verbose': -1
         }

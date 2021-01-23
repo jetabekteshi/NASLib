@@ -174,3 +174,11 @@ class GCNPredictor(Predictor):
 
         pred = np.concatenate(pred)
         return pred * self.std + self.mean
+
+    def get_random_hyperparams(self):
+        params = {'gcn_hidden': int(8 * np.random.choice(range(4, 20))),
+                    'batch_size': 7,
+                    'epochs': 300,
+                    'lr': 1e-4,
+                    'wd': np.random.choice([0, 3e-5, 3e-4, 3e-3])}
+        return params

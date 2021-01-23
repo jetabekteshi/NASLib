@@ -6,6 +6,7 @@ import numpy as np
 import lightgbm as lgb
 
 from naslib.predictors.trees import BaseTree
+from naslib.predictors.trees.ngb import loguniform
 
 class GBDTPredictor(BaseTree):
 
@@ -53,10 +54,10 @@ class GBDTPredictor(BaseTree):
             'boosting_type': 'gbdt',
             'objective': 'regression',
             'metric': {'l2'},
-            'min_data_in_leaf': np.random.choice(10) ,  # added by Colin White
-            'num_leaves': np.random.choice(40) ,
-            'learning_rate': 0.05,
-            'feature_fraction': 0.9,
+            'min_data_in_leaf': 5,  # added by Colin White
+            'num_leaves': np.random.choice(range(10,100)),
+            'learning_rate': loguniform(.001, .1),
+            'feature_fraction': np.random.uniform(.1, 1.0),
             'bagging_fraction': 0.8,
             'bagging_freq': 5,
             'verbose': -1

@@ -1,7 +1,8 @@
 import xgboost as xgb
 
 from naslib.predictors.trees import BaseTree
-
+import numpy as np
+from naslib.predictors.trees.ngb import loguniform
 
 class XGBoost(BaseTree):
 
@@ -10,18 +11,18 @@ class XGBoost(BaseTree):
         params = {
             'objective': 'reg:squarederror',
             'eval_metric': "rmse",
-            #'early_stopping_rounds': 100,
+            # 'early_stopping_rounds': 100,
             'booster': 'gbtree',
-            #NOTE: if using these hyperparameters XGB predicts the same
+            # NOTE: if using these hyperparameters XGB predicts the same
             # values always on NB201
-            #'max_depth': 13,
-            #'min_child_weight': 39,
-            #'colsample_bytree': 0.2545374925231651,
-            #'learning_rate': 0.008237525103357958,
-            #'alpha': 0.24167936088332426,
-            #'lambda': 31.393252465064943,
-            #'colsample_bylevel': 0.6909224923784677,
-            #'verbose': -1
+            # 'max_depth': 13,
+            # 'min_child_weight': 39,
+            # 'colsample_bytree': 0.2545374925231651,
+            # 'learning_rate': 0.008237525103357958,
+            # 'alpha': 0.24167936088332426,
+            # 'lambda': 31.393252465064943,
+            # 'colsample_bylevel': 0.6909224923784677,
+            # 'verbose': -1
         }
         return params
 
@@ -53,13 +54,13 @@ class XGBoost(BaseTree):
             'booster': 'gbtree',
             #NOTE: if using these hyperparameters XGB predicts the same
             # values always on NB201
-            #'max_depth': 13,
-            #'min_child_weight': 39,
-            #'colsample_bytree': 0.2545374925231651,
-            #'learning_rate': 0.008237525103357958,
+            'max_depth': np.random.choice(range(1,15)),
+            'min_child_weight': np.random.choice(range(1,100)),
+            'colsample_bytree': np.random.uniform(.0, 1.0),
+            'learning_rate': loguniform(.001, .1),
             #'alpha': 0.24167936088332426,
             #'lambda': 31.393252465064943,
-            #'colsample_bylevel': 0.6909224923784677,
+            'colsample_bylevel': np.random.uniform(.0, 1.0),
             #'verbose': -1
         }
         return params
