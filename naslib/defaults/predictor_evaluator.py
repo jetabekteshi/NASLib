@@ -133,9 +133,9 @@ class PredictorEvaluator(object):
         # check whether need to run HPO:
         # the first condition check whether the predictor needs separate HPO
         # the second condition check whether we want to run HPO at current fidelity or train_size
-        self.learn_hyper = True # TODO for debug --> remove this line later
+        # self.learn_hyper = True # TODO for debug --> remove this line later
         if self.predictor.need_separate_hpo and self.learn_hyper:
-            self.run_hpo(xtrain, ytrain, iters=100, score_metric='pearson') #TODO iters= specify how many hps to be tried
+            best_hyperparams = self.run_hpo(xtrain, ytrain, iters=1000, score_metric='pearson') #TODO iters= specify how many hps to be tried
             self.learn_hyper = False
 
         fit_time_start = time.time()
@@ -150,6 +150,7 @@ class PredictorEvaluator(object):
 
         logger.info("Compute evaluation metrics")
         results_dict = self.compare(ytest, test_pred)
+        results_dict['best_hp'] = best_hyperparams
         results_dict['train_size'] = train_size
         results_dict['fidelity'] = fidelity
         results_dict['train_time'] = np.sum(train_times)
@@ -190,7 +191,7 @@ class PredictorEvaluator(object):
 
             for train_size in self.train_size_list:
                 # if train_size % n == 0:
-                #     self.learn_hyper = True
+                self.learn_hyper = True
                 train_data = [data[:train_size] for data in full_train_data]
                 self.single_evaluate(train_data, test_data, fidelity=fidelity)
 
@@ -248,7 +249,7 @@ class PredictorEvaluator(object):
         with codecs.open(os.path.join(self.config.save, 'errors.json'), 'w', encoding='utf-8') as file:
             json.dump(self.results, file, separators=(',', ':'))
 
-    def run_hpo(self, xtrain, ytrain, iters=3, score_metric='pearson'):
+    def run_hpo(self, xtrain, ytrain, iters=3, score_metric='spearman'):
         logger.info(f'Perform HPO: run CV among {iters} hyperparams and scored by {score_metric}')
         n_train = len(xtrain)
         split_indices = utils.generate_kFold(n_train, 3)
@@ -278,3 +279,4 @@ class PredictorEvaluator(object):
         logger.info(f'Perform HPO: Best hyperparams = {best_hyperparams} with CV score = {best_score}')
         self.predictor.hyperparams = best_hyperparams
 
+        return best_hyperparams.copy()
