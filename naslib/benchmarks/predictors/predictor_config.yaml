@@ -2,7 +2,7 @@
 # experiment types: single, vary_train_size, vary_fidelity
 experiment_type: single
 search_space: nasbench201
-predictor: xgb
+predictor: bananas
 test_size: 10
 seed: 1000
 

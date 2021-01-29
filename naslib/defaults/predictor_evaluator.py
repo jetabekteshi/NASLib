@@ -8,9 +8,11 @@ import copy
 import torch
 from scipy import stats
 from sklearn import metrics
+import pickle
 
 from naslib.search_spaces.core.query_metrics import Metric
 from naslib.utils import utils
+import math
 
 logger = logging.getLogger(__name__)
 
@@ -135,7 +137,7 @@ class PredictorEvaluator(object):
         # the second condition check whether we want to run HPO at current fidelity or train_size
         # self.learn_hyper = True # TODO for debug --> remove this line later
         if self.predictor.need_separate_hpo and self.learn_hyper:
-            best_hyperparams = self.run_hpo(xtrain, ytrain, iters=1000, score_metric='pearson') #TODO iters= specify how many hps to be tried
+            best_hp, best_hp_score = self.run_hpo(xtrain, ytrain, iters=1000, score_metric='pearson') #TODO iters= specify how many hps to be tried
             self.learn_hyper = False
 
         fit_time_start = time.time()
@@ -150,7 +152,8 @@ class PredictorEvaluator(object):
 
         logger.info("Compute evaluation metrics")
         results_dict = self.compare(ytest, test_pred)
-        results_dict['best_hp'] = best_hyperparams
+        results_dict['best_hp'] = best_hp
+        results_dict['best_hp_cv_score'] = best_hp_score
         results_dict['train_size'] = train_size
         results_dict['fidelity'] = fidelity
         results_dict['train_time'] = np.sum(train_times)
@@ -160,10 +163,11 @@ class PredictorEvaluator(object):
         logger.info("train_size: {}, fidelity: {}, pearson correlation {}"
                     .format(train_size, fidelity, np.round(results_dict['pearson'], 4)))
         # print entire results dict:
-        print_string = ''
-        for key in results_dict:
-            print_string += key + ': {}, '.format(np.round(results_dict[key], 4))
-        logger.info(print_string)
+        # print_string = ''
+        # for key in results_dict:
+        #     if key != 'best_hp':
+        #         print_string += key + ': {}, '.format(np.round(results_dict[key], 4))
+        #         logger.info(print_string)
         self.results.append(results_dict)
         """
         Todo: query_time currently does not include the time taken to train a partial learning curve
@@ -246,8 +250,10 @@ class PredictorEvaluator(object):
         """log statistics to json file"""
         if not os.path.exists(self.config.save):
             os.makedirs(self.config.save)
-        with codecs.open(os.path.join(self.config.save, 'errors.json'), 'w', encoding='utf-8') as file:
-            json.dump(self.results, file, separators=(',', ':'))
+        with open(os.path.join(self.config.save, 'results'), 'wb') as outfile:
+            pickle.dump(self.results, outfile)
+        # with codecs.open(os.path.join(self.config.save, 'errors.json'), 'w', encoding='utf-8') as file:
+        #     json.dump(self.results, file, separators=(',', ':'))
 
     def run_hpo(self, xtrain, ytrain, iters=3, score_metric='spearman'):
         logger.info(f'Perform HPO: run CV among {iters} hyperparams and scored by {score_metric}')
@@ -260,18 +266,20 @@ class PredictorEvaluator(object):
         best_hyperparams = None
 
         for i in range(iters):
+
             hyperparams = predictor.get_random_hyperparams()
-            print(f'hyper_i = {hyperparams}') # for debug TODO remove this line later
             # check whether the predictor needs epoch training: if so, reduce the training epoch number during HPO
             if 'epochs' in hyperparams.keys():
                 hyperparams['epochs'] = int(hyperparams['epochs']/10)
             predictor.hyperparams = hyperparams
             cv_score = utils.cross_validation(xtrain, ytrain, predictor, split_indices, score_metric)
-            if cv_score > best_score:
+            print(f'score={cv_score}, hyper_i = {hyperparams}') # for debug TODO remove this line later
+
+            if cv_score > best_score or i == 0:
                 best_hyperparams = hyperparams
                 best_score = cv_score
 
-        if best_score is np.nan:
+        if math.isnan(best_score):
             best_hyperparams = predictor.default_hyperparams
         elif 'epochs' in best_hyperparams.keys():
             # best_hyperparams['epochs'] = predictor.default_hyperparams['epochs']
@@ -279,4 +287,4 @@ class PredictorEvaluator(object):
         logger.info(f'Perform HPO: Best hyperparams = {best_hyperparams} with CV score = {best_score}')
         self.predictor.hyperparams = best_hyperparams
 
-        return best_hyperparams.copy()
+        return best_hyperparams.copy(), best_score
