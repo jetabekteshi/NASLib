@@ -14,7 +14,7 @@ out_dir=$s3_folder\_$start_seed
 
 # search space / data:
 search_space=nasbench201
-dataset=cifar10
+dataset=ImageNet16-120
 search_epochs=500
 
 # trials / seeds:
