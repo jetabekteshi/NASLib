@@ -1,6 +1,5 @@
 optimizer=bananas
-predictors=(bananas feedforward gbdt gcn bonas xgb rf dngo \
-bohamiann bayes_lin_reg gp seminas sparse_gp var_sparse_gp nao)
+predictors=(xgb omni_xgb)
 
 start_seed=$1
 if [ -z "$start_seed" ]
@@ -10,12 +9,12 @@ fi
 
 # folders:
 base_file=NASLib/naslib
-s3_folder=bo201_feb22
+s3_folder=bo201_feb24
 out_dir=$s3_folder\_$start_seed
 
 # search space / data:
 search_space=nasbench201
-dataset=cifar10
+dataset=cifar100
 search_epochs=500
 
 # trials / seeds:
