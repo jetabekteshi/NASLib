@@ -1,5 +1,5 @@
-predictors=(xgb_hpo xgb feedforward_hpo feedforward)
-experiment_types=(vary_train_size vary_train_size vary_train_size vary_train_size)
+predictors=(jacov synflow snip grad_norm fisher grasp)
+experiment_types=(single single single single single single)
 
 start_seed=$1
 if [ -z "$start_seed" ]
@@ -9,7 +9,7 @@ fi
 
 # folders:
 base_file=NASLib/naslib
-s3_folder=p201_c10_feb21
+s3_folder=p201_c10_feb27
 out_dir=$s3_folder\_$start_seed
 
 # search space / data:
