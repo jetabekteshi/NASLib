@@ -82,6 +82,12 @@ supported_predictors = {
                             config=config, run_pre_compute=False, min_train_size=0),
     'xgb_hpo': XGBoost(encoding_type='adjacency_one_hot', hpo_wrapper=True),
     'feedforward_hpo': FeedforwardPredictor(encoding_type='adjacency_one_hot', hpo_wrapper=True),
+    'bonas_hpo': BonasPredictor(encoding_type='bonas', hpo_wrapper=True),
+    'nao_hpo': SemiNASPredictor(encoding_type='seminas', semi=False, hpo_wrapper=True),
+    'gcn_hpo': GCNPredictor(encoding_type='gcn', hpo_wrapper=True),
+    'gbdt_hpo': GBDTPredictor(encoding_type='adjacency_one_hot', hpo_wrapper=True),
+    'ngb_hpo': NGBoost(encoding_type='adjacency_one_hot', hpo_wrapper=True),
+    'rf_hpo': RandomForestPredictor(encoding_type='adjacency_one_hot', hpo_wrapper=True),
 }
 
 supported_search_spaces = {
