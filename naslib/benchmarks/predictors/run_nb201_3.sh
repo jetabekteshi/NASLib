@@ -1,5 +1,5 @@
-predictors=(rf_hpo bonas_hpo nao_hpo gcn_hpo ngb_hpo gbdt_hpo rf gbdt)
-experiment_types=(vary_train_size vary_train_size vary_train_size \
+predictors=(bananas_hpo rf_hpo bonas_hpo nao_hpo gcn_hpo ngb_hpo gbdt_hpo rf gbdt)
+experiment_types=(vary_train_size vary_train_size vary_train_size vary_train_size \
 vary_train_size vary_train_size vary_train_size vary_train_size vary_train_size)
 
 start_seed=$1
@@ -10,7 +10,7 @@ fi
 
 # folders:
 base_file=NASLib/naslib
-s3_folder=p201_c10_feb28
+s3_folder=p201_c10_mar2
 out_dir=$s3_folder\_$start_seed
 
 # search space / data:

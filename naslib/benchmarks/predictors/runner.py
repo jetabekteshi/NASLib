@@ -88,6 +88,7 @@ supported_predictors = {
     'gbdt_hpo': GBDTPredictor(encoding_type='adjacency_one_hot', hpo_wrapper=True),
     'ngb_hpo': NGBoost(encoding_type='adjacency_one_hot', hpo_wrapper=True),
     'rf_hpo': RandomForestPredictor(encoding_type='adjacency_one_hot', hpo_wrapper=True),
+    'bananas_hpo': Ensemble(predictor_type='bananas', num_ensemble=3, hpo_wrapper=True),
 }
 
 supported_search_spaces = {
