@@ -27,11 +27,9 @@ class NGBoost(BaseTree):
         params = {
             'param:n_estimators': 505,
             'param:learning_rate': 0.08127053060223186,
-            'param:minibatch_frac': 0.5081694143793387,
+            'param:minibatch_frac': 0.5,
             'base:max_depth': 6,
             'base:max_features': 0.7920456318712875,
-            #'base:min_samples_leaf': 15,
-            #'base:min_samples_split': 20,
             #'early_stopping_rounds': 100,
             #'verbose': -1
         }
@@ -45,9 +43,9 @@ class NGBoost(BaseTree):
             params = {
             'param:n_estimators': int(loguniform(128, 512)),
             'param:learning_rate': loguniform(.001, .1),
-            'param:minibatch_frac': np.random.uniform(.1, 1),
+            'param:minibatch_frac': .5,
             'base:max_depth': np.random.choice(24) + 1,
-            'base:max_features': np.random.uniform(.1, 1)
+            'base:max_features': np.random.uniform(.1, 1),
             }
         self.hyperparams = params
         return params
@@ -61,9 +59,8 @@ class NGBoost(BaseTree):
 
     def train(self, train_data):
         X_train, y_train = train_data
-        min_samples_leaf = min(max(len(X_train)//2, 1), 15)
-        min_samples_split = min(max(len(X_train)//2, 2), 20)
-        
+        min_samples_leaf = 1
+        min_samples_split = 2
         base_learner = DecisionTreeRegressor(criterion='friedman_mse', 
                                              min_samples_leaf=min_samples_leaf, 
                                              min_samples_split=min_samples_split,
