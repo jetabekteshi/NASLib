@@ -1,5 +1,5 @@
-predictors=(jacov snip grad_norm fisher grasp synflow)
-experiment_types=(single single single single single single)
+predictors=(bonas jacov grad_norm fisher synflow)
+experiment_types=(vary_train_size single single single single)
 
 start_seed=$1
 if [ -z "$start_seed" ]
@@ -9,7 +9,7 @@ fi
 
 # folders:
 base_file=NASLib/naslib
-s3_folder=p301_mar4
+s3_folder=p301_mar5
 out_dir=$s3_folder\_$start_seed
 
 # search space / data:
