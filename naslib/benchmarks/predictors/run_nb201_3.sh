@@ -1,16 +1,5 @@
-predictors=(valloss valacc sotl sotle lce \
-lcsvr \
-bonas bananas mlp gcn seminas nao \
-ngb rf xgb gbdt \
-dngo bohamiann bayes_lin_reg \
-gp sparse_gp var_sparse_gp)
-
-experiment_types=(vary_fidelity vary_fidelity vary_fidelity vary_fidelity vary_fidelity \
-vary_both \
-vary_train_size vary_train_size vary_train_size vary_train_size vary_train_size vary_train_size \
-vary_train_size vary_train_size vary_train_size vary_train_size \
-vary_train_size vary_train_size vary_train_size \
-vary_train_size vary_train_size vary_train_size)
+predictors=(jacov snip grad_norm fisher grasp synflow)
+experiment_types=(single single single single single single)
 
 start_seed=$1
 if [ -z "$start_seed" ]
@@ -20,12 +9,12 @@ fi
 
 # folders:
 base_file=NASLib/naslib
-s3_folder=p201_c10_mar4
+s3_folder=p201_im_mar4
 out_dir=$s3_folder\_$start_seed
 
 # search space / data:
 search_space=nasbench201
-dataset=cifar10
+dataset=ImageNet16-120
 
 # other variables:
 trials=100
