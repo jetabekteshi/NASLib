@@ -1,5 +1,7 @@
-predictors=(bonas jacov snip grad_norm fisher synflow )
-experiment_types=(vary_train_size single single single single single)
+predictors=(gcn ngb rf_hpo xgb gbdt_hpo \
+bananas feedforward nao rf gbdt)
+experiment_types=(vary_train_size vary_train_size vary_train_size vary_train_size vary_train_size \
+vary_train_size vary_train_size vary_train_size vary_train_size vary_train_size)
 
 start_seed=$1
 if [ -z "$start_seed" ]
@@ -9,7 +11,7 @@ fi
 
 # folders:
 base_file=NASLib/naslib
-s3_folder=p101_mar5
+s3_folder=p101_mar6
 out_dir=$s3_folder\_$start_seed
 
 # search space / data:
