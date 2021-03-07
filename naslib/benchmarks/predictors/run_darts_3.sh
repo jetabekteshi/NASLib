@@ -1,4 +1,4 @@
-predictors=(lcnet)
+predictors=(lce)
 experiment_types=(vary_fidelity)
 
 start_seed=$1
@@ -9,7 +9,7 @@ fi
 
 # folders:
 base_file=NASLib/naslib
-s3_folder=p301_mar7
+s3_folder=p301_mar8
 out_dir=$s3_folder\_$start_seed
 
 # search space / data:
