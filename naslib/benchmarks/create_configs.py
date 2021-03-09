@@ -88,6 +88,12 @@ def main(args):
             train_size_list.pop(-1)
             fidelity_list.pop(1)
             fidelity_list.pop(1)
+            
+        elif True:
+            # hard-coding this for now
+            train_size_list.pop(-1)
+            train_size_list.pop(-1)
+            train_size_list.pop(-1)
 
         for i in range(args.start_seed, args.start_seed + args.trials):
             config = {

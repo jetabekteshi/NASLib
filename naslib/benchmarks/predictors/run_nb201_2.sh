@@ -1,5 +1,5 @@
-predictors=(bonas)
-experiment_types=(vary_train_size)
+predictors=(seminas_jacov nao_jacov seminas nao)
+experiment_types=(vary_train_size vary_train_size vary_train_size vary_train_size)
 
 start_seed=$1
 if [ -z "$start_seed" ]
@@ -9,12 +9,12 @@ fi
 
 # folders:
 base_file=NASLib/naslib
-s3_folder=p201_c100_mar5
+s3_folder=p201_c10_mar9
 out_dir=$s3_folder\_$start_seed
 
 # search space / data:
 search_space=nasbench201
-dataset=cifar100
+dataset=cifar10
 
 # other variables:
 trials=100
