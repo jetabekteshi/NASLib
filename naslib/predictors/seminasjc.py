@@ -911,10 +911,6 @@ class SemiNASJCPredictor(Predictor):
                 print('Train EPD')
                 train_controller(self.model, all_encoder_input, all_encoder_target, epochs)
                 print('Finish training EPD')
-            
-        train_pred = np.squeeze(self.query(xtrain))
-        train_error = np.mean(abs(train_pred-ytrain))
-        return train_error
 
     def query(self, xtest, info=None, eval_batch_size=100):
 

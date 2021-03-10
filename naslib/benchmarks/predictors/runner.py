@@ -34,7 +34,7 @@ supported_predictors = {
     'bonas': BonasPredictor(encoding_type='bonas', hpo_wrapper=True),
     'nao': SemiNASPredictor(encoding_type='seminas', semi=False, hpo_wrapper=False),    
     'seminas': SemiNASPredictor(encoding_type='seminas', semi=True, hpo_wrapper=False),
-    'seminas_jacov': SemiNASJCPredictor(encoding_type='seminas', semi=True, hpo_wrapper=True,
+    'seminas_jacov': SemiNASJCPredictor(encoding_type='seminas', semi=True, hpo_wrapper=False,
                                         jacov_onehot=True, config=config),
     'nao_jacov': SemiNASJCPredictor(encoding_type='seminas', semi=False, hpo_wrapper=False,
                                     jacov_onehot=True, config=config),
