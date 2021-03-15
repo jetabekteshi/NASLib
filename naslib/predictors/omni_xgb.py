@@ -9,7 +9,7 @@ import xgboost as xgb
 
 from naslib.predictors.predictor import Predictor
 from naslib.predictors.lcsvr import loguniform
-from naslib.predictors.zerocost_estimators import ZeroCostEstimators
+from naslib.predictors.zerocost_v1 import ZeroCostV1
 from naslib.predictors.utils.encodings import encode
 from naslib.utils import utils
 from naslib.search_spaces.core.query_metrics import Metric
@@ -56,7 +56,7 @@ class OmniXGBPredictor(Predictor):
             self.train_loader, _, _, _, _ = utils.get_train_val_loaders(self.config, mode='train')
 
             for method_name in self.zero_cost:
-                zc_method = ZeroCostEstimators(self.config, batch_size=64, method_type=method_name)
+                zc_method = ZeroCostV1(self.config, batch_size=64, method_type=method_name)
                 zc_method.train_loader = copy.deepcopy(self.train_loader)
                 xtrain_zc_scores = zc_method.query(xtrain)
                 xtest_zc_scores = zc_method.query(xtest)
@@ -113,7 +113,7 @@ class OmniXGBPredictor(Predictor):
             train_losses = np.array([lcs['TRAIN_LOSS_lc'][-1] for lcs in info])
             mean = np.mean(train_losses)
             std = np.std(train_losses)
-            normalized = (train_losses - mean)/std
+            normalized = (train_losses - mean) / std
             full_xdata = [[*x, normalized[i]] for i, x in enumerate(full_xdata)]
             
         elif 'sotle' in self.lce and len(info[0]['TRAIN_LOSS_lc']) < 3:

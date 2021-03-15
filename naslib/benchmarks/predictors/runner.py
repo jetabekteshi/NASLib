@@ -7,9 +7,9 @@ import naslib as nl
 from naslib.defaults.predictor_evaluator import PredictorEvaluator
 
 from naslib.predictors import Ensemble, FeedforwardPredictor, GBDTPredictor, \
-EarlyStopping, GCNPredictor, BonasPredictor, ZeroCostEstimators, SoLosspredictor, \
+EarlyStopping, GCNPredictor, BonasPredictor, ZeroCostV1, ZeroCostV2, SoLosspredictor, \
 SVR_Estimator, XGBoost, NGBoost, RandomForestPredictor, DNGOPredictor, \
-BOHAMIANN, BayesianLinearRegression, LCNetPredictor, SemiNASPredictor, SemiNASJCPredictor, \
+BOHAMIANN, BayesianLinearRegression, LCNetPredictor, SemiNASPredictor, OMNISemiNASPredictor, \
 GPPredictor, SparseGPPredictor, VarSparseGPPredictor, \
 LCEPredictor, OmniPredictor, OmniXGBPredictor
 
@@ -32,12 +32,8 @@ supported_predictors = {
     'bananas': Ensemble(predictor_type='bananas', num_ensemble=3, hpo_wrapper=True),
     'gcn': GCNPredictor(encoding_type='gcn', hpo_wrapper=True),
     'bonas': BonasPredictor(encoding_type='bonas', hpo_wrapper=True),
-    'nao': SemiNASPredictor(encoding_type='seminas', semi=False, hpo_wrapper=False),    
-    'seminas': SemiNASPredictor(encoding_type='seminas', semi=True, hpo_wrapper=False),
-    'seminas_jacov': SemiNASJCPredictor(encoding_type='seminas', semi=True, hpo_wrapper=False,
-                                        jacov_onehot=True, config=config),
-    'nao_jacov': SemiNASJCPredictor(encoding_type='seminas', semi=False, hpo_wrapper=False,
-                                    jacov_onehot=True, config=config),
+    'nao': SemiNASPredictor(encoding_type='seminas', semi=False, hpo_wrapper=True),    
+    'seminas': SemiNASPredictor(encoding_type='seminas', semi=True, hpo_wrapper=True),
     'dngo': DNGOPredictor(encoding_type='adjacency_one_hot'),
     'bohamiann': BOHAMIANN(encoding_type='adjacency_one_hot'),
     'bayes_lin_reg': BayesianLinearRegression(encoding_type='adjacency_one_hot'),
@@ -58,12 +54,12 @@ supported_predictors = {
     'lce': LCEPredictor(metric=Metric.VAL_ACCURACY),
     'lcnet': LCNetPredictor(metric=Metric.VAL_ACCURACY),
     'lcsvr': SVR_Estimator(metric=Metric.VAL_ACCURACY, all_curve=False),    
-    'jacov': ZeroCostEstimators(config, batch_size=64, method_type='jacov'),
-    'snip': ZeroCostEstimators(config, batch_size=64, method_type='snip'),
-    'grad_norm': ZeroCostEstimators(config, batch_size=64, method_type='grad_norm'),
-    'fisher': ZeroCostEstimators(config, batch_size=64, method_type='fisher'),
-    'grasp': ZeroCostEstimators(config, batch_size=64, method_type='grasp'),
-    'synflow': ZeroCostEstimators(config, batch_size=64, method_type='synflow'),
+    'jacov': ZeroCostV1(config, batch_size=64, method_type='jacov'),
+    'snip': ZeroCostV2(config, batch_size=64, method_type='snip'),
+    'grad_norm': ZeroCostV2(config, batch_size=64, method_type='grad_norm'),
+    'fisher': ZeroCostV2(config, batch_size=64, method_type='fisher'),
+    'grasp': ZeroCostV2(config, batch_size=64, method_type='grasp'),
+    'synflow': ZeroCostV2(config, batch_size=64, method_type='synflow'),
     'gbdt_path': GBDTPredictor(encoding_type='path', hpo_wrapper=False),
     'ngb_path': NGBoost(encoding_type='path', hpo_wrapper=False),
     'dngo_path': DNGOPredictor(encoding_type='path'),
@@ -74,6 +70,8 @@ supported_predictors = {
                           config=config),
     'omni_xgb': OmniXGBPredictor(zero_cost=['jacov'], lce=[], encoding_type='adjacency_one_hot', 
                                  config=config),
+    'omni_seminas': OMNISemiNASPredictor(encoding_type='seminas', semi=True, hpo_wrapper=False,
+                                         jacov_onehot=True, config=config),
     'omni_both': OmniPredictor(zero_cost=['jacov', 'snip'], lce=['sotle', 'valacc'], encoding_type='adjacency_one_hot',
                                config=config),
     'omni_lofi': OmniPredictor(zero_cost=['jacov'], lce=[], encoding_type='adjacency_one_hot', 
