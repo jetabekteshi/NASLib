@@ -2,8 +2,8 @@
 # experiment types: single, vary_train_size, vary_fidelity
 experiment_type: single
 search_space: nasbench201
-predictor: omni_seminas
-test_size: 2
+predictor: xgb
+test_size: 200
 uniform_random: 1
 seed: 1000
 max_hpo_time: 0

@@ -32,7 +32,6 @@ class OmniPredictor(Predictor):
                  n_hypers=35, run_pre_compute=True, min_train_size=0, max_zerocost=np.inf):
         
         self.zero_cost = zero_cost
-        self.lce = lce
         self.encoding_type = encoding_type
         self.config = config
         self.n_hypers = n_hypers
@@ -191,7 +190,9 @@ class OmniPredictor(Predictor):
             reqs = {'requires_partial_lc':True, 
                     'metric':self.metric, 
                     'requires_hyperparameters':False, 
-                    'hyperparams':{}
+                    'hyperparams':{}, 
+                    'unlabeled':False, 
+                    'unlabeled_factor':0
                    }
         else:
             reqs = super().get_data_reqs()
