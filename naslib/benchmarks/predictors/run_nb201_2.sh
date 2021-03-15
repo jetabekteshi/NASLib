@@ -1,5 +1,5 @@
-predictors=(seminas_jacov nao_jacov seminas nao)
-experiment_types=(vary_train_size vary_train_size vary_train_size vary_train_size)
+predictors=(omni_seminas seminas)
+experiment_types=(vary_train_size vary_train_size)
 
 start_seed=$1
 if [ -z "$start_seed" ]
@@ -9,7 +9,7 @@ fi
 
 # folders:
 base_file=NASLib/naslib
-s3_folder=p201_c10_mar9
+s3_folder=p201_c10_mar14
 out_dir=$s3_folder\_$start_seed
 
 # search space / data:
