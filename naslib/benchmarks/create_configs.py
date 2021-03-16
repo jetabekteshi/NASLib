@@ -73,15 +73,8 @@ def main(args):
                                                      stop=np.log(total_epochs)/np.log(2), 
                                                      num=15, endpoint=True, base=2.0)]
 
-        
-        if 'p201_c10_mar14' in args.out_dir:
-            # todo: remove this. hard-coding this for now
-            train_size_list.pop(-1)
-            train_size_list.pop(-1)
-            train_size_list.pop(-1)
-            train_size_list.pop(-1)
-        
-        elif 'svr' in args.predictor:
+
+        if 'svr' in args.predictor:
             train_size_list.pop(0)
             fidelity_list.pop(0)
             fidelity_list.pop(0)
