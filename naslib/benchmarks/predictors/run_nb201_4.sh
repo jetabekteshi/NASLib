@@ -1,5 +1,5 @@
-predictors=(lcnet)
-experiment_types=(vary_fidelity)
+predictors=(omni_seminas)
+experiment_types=(vary_both)
 
 start_seed=$1
 if [ -z "$start_seed" ]
@@ -9,12 +9,12 @@ fi
 
 # folders:
 base_file=NASLib/naslib
-s3_folder=p201_c10_mar7
+s3_folder=p201_im_mar16
 out_dir=$s3_folder\_$start_seed
 
 # search space / data:
 search_space=nasbench201
-dataset=cifar10
+dataset=ImageNet16-120
 
 # other variables:
 trials=100
