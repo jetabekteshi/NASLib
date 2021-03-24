@@ -9,12 +9,12 @@ fi
 
 # folders:
 base_file=NASLib/naslib
-s3_folder=bo201_mar24
+s3_folder=bo201_c100_mar24
 out_dir=$s3_folder\_$start_seed
 
 # search space / data:
 search_space=nasbench201
-dataset=cifar10
+dataset=cifar100
 search_epochs=500
 
 # trials / seeds:
