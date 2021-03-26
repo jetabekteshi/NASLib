@@ -2,6 +2,7 @@ from .predictor import Predictor
 from .early_stopping import EarlyStopping
 from .ensemble import Ensemble
 from .feedforward import FeedforwardPredictor
+from .alphax import AlphaXPredictor
 from .gcn import GCNPredictor
 from .bonas import BonasPredictor
 from .seminas import SemiNASPredictor
