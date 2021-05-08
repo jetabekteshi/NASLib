@@ -1,4 +1,4 @@
-predictors=(gpwl xgb gp blr seminas)
+predictors=(gpwl xgb gp lgb rf)
 experiment_types=(vary_train_size vary_train_size vary_train_size vary_train_size vary_train_size)
 
 start_seed=$1
