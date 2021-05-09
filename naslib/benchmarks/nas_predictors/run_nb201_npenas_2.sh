@@ -1,5 +1,5 @@
 optimizer=npenas
-predictors=(omni_seminas)
+predictors=(gpwl nao)
 
 start_seed=$1
 if [ -z "$start_seed" ]
@@ -9,13 +9,13 @@ fi
 
 # folders:
 base_file=NASLib/naslib
-s3_folder=np201_mar16
+s3_folder=np201_may8
 out_dir=$s3_folder\_$start_seed
 
 # search space / data:
 search_space=nasbench201
 dataset=cifar10
-search_epochs=500
+search_epochs=300
 
 # trials / seeds:
 trials=100
