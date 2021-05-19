@@ -465,7 +465,7 @@ def train_controller(model, train_input, train_target, epochs):
 class OmniSemiNASPredictor(Predictor):
     # todo: make the code general to support any zerocost predictors
     def __init__(self, encoding_type='seminas', ss_type=None, semi=True, hpo_wrapper=False, 
-                 config=None, run_pre_compute=True, jacov_onehot=True, synthetic_factor=1, 
+                 config=None, run_pre_compute=True, zc_encoding='categorical', synthetic_factor=1, 
                  max_zerocost=np.inf, zero_cost=[], lce=[]):
         self.encoding_type = encoding_type
         self.semi = semi
@@ -486,7 +486,7 @@ class OmniSemiNASPredictor(Predictor):
         self.min_fidelity = 3
         
         # todo: this should be generalized to any zero-cost method
-        self.jacov_onehot = jacov_onehot
+        self.zc_encoding = zc_encoding
 
     def prepare_features(self, xdata, zc_info=None, lc_info=None):
         # this concatenates architecture features with zero-cost features        
@@ -509,8 +509,10 @@ class OmniSemiNASPredictor(Predictor):
                     # todo: the following code is still specific to jacov. Make it for any zerocost
                     # currently only one_hot zc features are supported
                     jac_encoded = discretize(zc_info['jacov_scores'][i], upper_bounds=self.jacov_bins, 
-                                             one_hot=self.jacov_onehot)
-                    jac_encoded = [jac + self.zc_offset for jac in jac_encoded]
+                                             encoding=self.zc_encoding)
+                    if self.zc_encoding == 'one_hot':
+                        jac_encoded = [jac + self.zc_offset for jac in jac_encoded]
+                    print('jac', zc_info['jacov_scores'][i], 'encoding', jac_encoded)
                     full_xdata[i] = [*full_xdata[i], *jac_encoded]
 
         if self.add_lce:
@@ -592,8 +594,6 @@ class OmniSemiNASPredictor(Predictor):
                                        ss_type=self.ss_type, 
                                        dataset=self.dataset)
 
-            # modify feature length and vocab size based on encoding type and num bins
-            assert self.jacov_onehot, 'Zero-cost categorical currently not supported'
             self.encoder_length += len(self.jacov_bins) + 1
             self.decoder_length += len(self.jacov_bins) + 1
             self.zc_offset = full_vocab_size

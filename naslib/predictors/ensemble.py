@@ -80,7 +80,10 @@ class Ensemble(Predictor):
                                       min_train_size=0, max_zerocost=100),
             'omni_seminas': OmniSemiNASPredictor(zero_cost=['jacov'], lce=[], encoding_type='seminas', 
                                                  ss_type=self.ss_type, run_pre_compute=False, semi=True,
-                                                 max_zerocost=1000, config=self.config),
+                                                 max_zerocost=1000, config=self.config, zc_encoding='one_hot'),
+            'omni_seminas_cat': OmniSemiNASPredictor(zero_cost=['jacov'], lce=[], encoding_type='seminas', 
+                                                     ss_type=self.ss_type, run_pre_compute=False, semi=True,
+                                                     max_zerocost=1000, config=self.config, zc_encoding='categorical'),
         }
 
         return [copy.deepcopy(trainable_predictors[self.predictor_type]) for _ in range(self.num_ensemble)]

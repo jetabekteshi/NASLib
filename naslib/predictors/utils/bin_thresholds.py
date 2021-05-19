@@ -10,12 +10,12 @@ each bin during the search. To save time, we precomputed zero-cost
 bins and then add the runtime of this precomputation later.
 """
 
-def discretize(x, upper_bounds=None, one_hot=True):
+def discretize(x, upper_bounds=None, encoding='one_hot'):
     # return discretization based on upper_bounds
     # supports one_hot or categorical output
     assert upper_bounds is not None and len(upper_bounds) >= 1
 
-    if one_hot:
+    if encoding == 'one_hot':
         cat = len(upper_bounds) + 1
         discretized = [0 for _ in range(cat)]
         for i, ub in enumerate(upper_bounds):
@@ -27,8 +27,8 @@ def discretize(x, upper_bounds=None, one_hot=True):
     else:
         for i, ub in enumerate(upper_bounds):
             if x < ub:
-                return i
-        return len(upper_bounds) + 1
+                return [i]
+        return [len(upper_bounds) + 1]
 
 def get_lce_bins(train_info, key='TRAIN_LOSS_lc', max_bins=9):
 
@@ -41,17 +41,17 @@ def get_lce_bins(train_info, key='TRAIN_LOSS_lc', max_bins=9):
     indices = range(bin_size, train_size, bin_size)
     return [losses[i] for i in indices]
     
-def get_bins(zero_cost, train_size, ss_type, dataset):
+def get_bins(zero_cost, train_size, ss_type, dataset, limit_bins=False):
 
     if ss_type == 'nasbench201' and dataset == 'cifar10' and zero_cost == 'jacov':
         # precomputation based on 100 jacov values (366 sec on a CPU)
-        if train_size <= 10:
+        if train_size <= 10 and limit_bins:
             bins = [-317.264]
-        elif train_size <= 20:
+        elif train_size <= 20 and limit_bins:
             bins = [-459.05, -282.091]
-        elif train_size <= 40:
+        elif train_size <= 40 and limit_bins:
             bins = [-697.812, -320.036, -280.607]
-        elif train_size <= 80:
+        elif train_size <= 80 and limit_bins:
             bins = [-2142.063, -459.471, -321.118, -282.115, -279.427]
         else:
             # precompution based on 1000 jacov values (3660 sec on a CPU)

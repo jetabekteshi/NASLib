@@ -3,6 +3,7 @@ optimizer: oneshot
 search_space: darts
 dataset: cifar10
 out_dir: run
+print_anytime: False
 
 experiment_type: single
 predictor: oneshot

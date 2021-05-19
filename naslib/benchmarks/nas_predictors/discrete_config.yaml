@@ -3,6 +3,7 @@ optimizer: bananas
 search_space: nasbench201
 dataset: cifar10
 out_dir: run
+print_anytime: False
 
 search:
   seed: 0

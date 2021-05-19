@@ -3,6 +3,8 @@ from __future__ import print_function
 import sys
 import logging
 import argparse
+
+from nasbench import api
 import torchvision.datasets as dset
 from torch.utils.data import Dataset
 from sklearn import metrics
