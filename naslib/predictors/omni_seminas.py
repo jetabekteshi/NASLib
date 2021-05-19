@@ -628,6 +628,11 @@ class OmniSemiNASPredictor(Predictor):
         xtrain_full_features = self.prepare_features(xtrain, 
                                                      zc_info=self.xtrain_zc_info, 
                                                      lc_info=train_info)
+
+        print('training', xtrain)
+        print('zc info', self.xtrain_zc_info)
+        print('full', xtrain_full_features)
+
         for i in range(iterations):
             print('Iteration {}'.format(i+1))
 
@@ -664,7 +669,10 @@ class OmniSemiNASPredictor(Predictor):
                                               lc_info=info)
         else:
             # otherwise, they will be in info (often used during NAS experiments)
-            test_data = self.prepare_features(xtest, zc_info=info)            
+            test_data = self.prepare_features(xtest, zc_info=info)    
+        print('querying', xtest)
+        print('zc info', info)
+        print('test features', test_data)
         test_dataset = ControllerDataset(test_data, None, False)
         test_queue = torch.utils.data.DataLoader(test_dataset, batch_size=batch_size, shuffle=False, 
                                                  pin_memory=True, drop_last=False)
