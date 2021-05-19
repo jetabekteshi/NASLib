@@ -130,6 +130,7 @@ def main(args):
                 'dataset': args.dataset,
                 'optimizer': args.optimizer,
                 'out_dir': args.out_dir,
+                'print_anytime': False,
                 'search': {'predictor_type': args.predictor,
                            'epochs': args.epochs,
                            'checkpoint_freq': args.checkpoint_freq,
