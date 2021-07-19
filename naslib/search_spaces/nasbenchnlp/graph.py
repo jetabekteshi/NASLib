@@ -109,18 +109,17 @@ class NasBenchNLPSearchSpace(Graph):
             if self.accs is None:
                 recipe = convert_compact_to_recipe(self.get_compact())
                 try:
-                    print('compact', self.get_compact())
+                    print('compact encoding', self.get_compact())
                     print('start training')
-                    val_losses = main_one_model_train(recipe)
-                    assert len(val_losses) == 1
+                    train_losses, val_losses, test_losses = main_one_model_train(recipe)
+                    assert len(val_losses) == 3
 
                 except Exception as e:
-                    print('compact', self.get_compact())
-                    print('failed training')
-                    print(e)
-                    val_losses = [6.5]
+                    print('compact encoding', self.get_compact())
+                    print('training does not converge')
+                    val_losses = [6.5, 6.5, 6.5]
                     
-                self.accs = [100 - (loss - 0.5) for loss in val_losses]
+                self.accs = [100 - loss for loss in val_losses]
 
             arch = encode_nlp(self, encoding_type='adjacency_mix', max_nodes=12, accs=self.accs)
             if metric == Metric.RAW:
