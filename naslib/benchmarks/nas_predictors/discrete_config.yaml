@@ -10,7 +10,7 @@ search:
   epochs: 100
   fidelity: -1
 
-  predictor_type: var_sparse_gp
+  predictor_type: mlp
   num_init: 10  
   k: 10
 

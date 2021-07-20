@@ -19,14 +19,14 @@ predictor: xgb
 uniform_random: 1
 
 # test set size
-test_size: 100
+test_size: 200
 
 # size of the training set (used by model-based predictors)
-train_size_single: 50
+train_size_single: 500
 train_size_list: [5, 8, 14, 24, 42, 71, 121, 205]
 
 # num. epochs to train the test set arches (used by learning curve methods)
-fidelity_single: 5
+fidelity_single: 100
 fidelity_list: [1, 2, 3, 5, 7, 9, 13, 19, 26, 37, 52, 73]
 
 # output results to this directory
